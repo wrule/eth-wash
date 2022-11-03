@@ -38,9 +38,17 @@ async function wash_eth(
       address: random_wallet.address,
       private_key: random_wallet.privateKey,
     });
-    const { tx } = await send_eth_to_address(current_wallet, random_wallet.address, current_amount);
-    current_wallet = random_wallet.connect(current_wallet.provider);
-    current_amount = tx.value;
+    let loop = true;
+    while (loop) {
+      try {
+        const { tx } = await send_eth_to_address(current_wallet, random_wallet.address, current_amount);
+        loop = false;
+        current_wallet = random_wallet.connect(current_wallet.provider);
+        current_amount = tx.value;
+      } catch (e) {
+        console.log(e);
+      }
+    }
   }
   return await send_eth_to_address(current_wallet, to, current_amount);
 }
@@ -48,7 +56,7 @@ async function wash_eth(
 async function main() {
   const provider = new ethers.providers.JsonRpcProvider(`https://goerli.infura.io/v3/${secret.prj_id}`);
   const wallet = new ethers.Wallet(secret.pri_key, provider);
-  const target = '0xXXXX';
+  const target = '0x28dF8c4d5fc59cA685546e817772181Fb717E503';
   await wash_eth(wallet, target, 5);
 }
 
