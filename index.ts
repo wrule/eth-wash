@@ -1,5 +1,7 @@
 import { ethers } from 'ethers';
 
+const secret = require('./.secret.json');
+
 async function send_eth_to_address(
   wallet: ethers.Wallet,
   to: string,
