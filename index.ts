@@ -10,9 +10,9 @@ async function send_eth_to_address(
   while (true) {
     try {
       console.log('获取gas价格...');
-      const [balance, { maxFeePerGas }] = await Promise.all([
+      const [balance, maxFeePerGas] = await Promise.all([
         amount || wallet.getBalance(),
-        wallet.getFeeData(),
+        wallet.getGasPrice(),
       ]);
       if (!maxFeePerGas) throw '无法获取gas价格';
       console.log('发送交易...');
