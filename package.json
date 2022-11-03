@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "main": "index.js",
   "scripts": {
-    "dev": "node index.js"
+    "dev": "node index.js",
+    "watch": "tsc -w",
+    "build": "tsc"
   },
   "repository": "https://github.com/wrule/eth-wash.git",
   "license": "MIT",
