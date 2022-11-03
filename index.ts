@@ -45,17 +45,9 @@ async function wash_eth(
       address: random_wallet.address,
       private_key: random_wallet.privateKey,
     });
-    let loop = true;
-    while (loop) {
-      try {
-        const { tx } = await send_eth_to_address(current_wallet, random_wallet.address, current_amount);
-        loop = false;
-        current_wallet = random_wallet.connect(current_wallet.provider);
-        current_amount = tx.value;
-      } catch (e) {
-        console.log(e);
-      }
-    }
+    const { tx } = await send_eth_to_address(current_wallet, random_wallet.address, current_amount);
+    current_wallet = random_wallet.connect(current_wallet.provider);
+    current_amount = tx.value;
   }
   return await send_eth_to_address(current_wallet, to, current_amount);
 }
