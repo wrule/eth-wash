@@ -7,20 +7,27 @@ async function send_eth_to_address(
   to: string,
   amount?: ethers.BigNumber,
 ) {
-  console.log('获取gas价格...');
-  const [balance, { maxFeePerGas }] = await Promise.all([
-    amount || wallet.getBalance(),
-    wallet.getFeeData(),
-  ]);
-  if (!maxFeePerGas) throw '无法获取gas价格';
-  console.log('发送交易...');
-  const send_amount = balance.sub(maxFeePerGas.mul(21000));
-  console.log({ from: wallet.address, to, value: ethers.utils.formatEther(send_amount).toString() });
-  const tx = await wallet.sendTransaction({ to, value: send_amount });
-  console.log('等待交易确认...');
-  const tr = await tx.wait();
-  console.log('交易已经确认');
-  return { tx, tr };
+  while (true) {
+    try {
+      console.log('获取gas价格...');
+      const [balance, { maxFeePerGas }] = await Promise.all([
+        amount || wallet.getBalance(),
+        wallet.getFeeData(),
+      ]);
+      if (!maxFeePerGas) throw '无法获取gas价格';
+      console.log('发送交易...');
+      const send_amount = balance.sub(maxFeePerGas.mul(21000));
+      console.log({ from: wallet.address, to, value: ethers.utils.formatEther(send_amount).toString() });
+      const tx = await wallet.sendTransaction({ to, value: send_amount });
+      console.log('等待交易确认...');
+      const tr = await tx.wait();
+      console.log('交易已经确认');
+      return { tx, tr };
+    } catch (e) {
+      console.log(e);
+      console.log('准备重试...');
+    }
+  }
 }
 
 async function wash_eth(
